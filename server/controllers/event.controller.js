@@ -38,18 +38,10 @@ const getEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
     try {
         const {id} = req.params;
-        await Event.findByIdAndUpdate(id, req.body, {new: true}, (error, event) => {
-            if (error) {
-                return res.status(500).json({error: error.message});
-            }
-            if (!event) {
-                return res.status(404).send("Event not found");
-            }
-            return res.status(200).json({event});
-        }
-        );
-    }
-    catch (error) {
+        const event = await Event.findByIdAndUpdate(id, req.body, {new: true});
+        if (!event) return res.status(404).json({message: "Event not found"});
+        return res.status(200).json(event)
+    } catch (error) {
         return res.status(500).json({error: error.message});
     }
 }
